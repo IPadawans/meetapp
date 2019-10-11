@@ -1,4 +1,4 @@
-import { isBefore, parseISO } from 'date-fns';
+import { isBefore } from 'date-fns';
 import Sequelize, { Model } from 'sequelize';
 
 class Meetup extends Model {
@@ -12,7 +12,7 @@ class Meetup extends Model {
         past: {
           type: Sequelize.VIRTUAL,
           get() {
-            return isBefore(parseISO(this.date), new Date());
+            return isBefore(this.date, new Date());
           },
         },
       },

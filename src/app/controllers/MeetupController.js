@@ -97,6 +97,10 @@ class MeetupController {
           model: User,
           attributes: ['name', 'email'],
         },
+        {
+          model: File,
+          attributes: ['name', 'path', 'url'],
+        },
       ],
     });
 

@@ -4,6 +4,7 @@ import Subscription from '../models/Subscription';
 import Queue from '../../lib/Queue';
 import NewSubscribeMail from '../jobs/NewSubscribeMail';
 import User from '../models/User';
+import File from '../models/File';
 
 class SubscriptionController {
   async store(req, res) {
@@ -85,12 +86,34 @@ class SubscriptionController {
               [Op.gt]: new Date(),
             },
           },
+          include: [
+            {
+              model: User,
+              attributes: ['name', 'email'],
+            },
+            {
+              model: File,
+              attributes: ['name', 'path', 'url'],
+            },
+          ],
           required: true,
         },
       ],
       order: [[Meetup, 'date']],
     });
     return res.json(subscriptions);
+  }
+
+  async delete(req, res) {
+    const { idSubscription } = req.params;
+    const subscription = await Subscription.findByPk(idSubscription);
+    if (!subscription) {
+      return res
+        .status(404)
+        .json({ error: `Subscription with id: ${idSubscription} not found` });
+    }
+    await subscription.destroy();
+    return res.send();
   }
 }
 
